@@ -1,10 +1,11 @@
+import LandingPage from "./pages/LandingPage";
+
 export function App() {
 
   return (
     <>
-      <div className="container mx-auto">
-        <h1>Hello from Goland</h1>
-      </div >
+      <header className="text-3xl font-mono font-semibold px-4 py-4">Viktor Edman</header>
+      <LandingPage />
     </>
   )
 }

@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+
+	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,6 +18,11 @@ func main() {
 	//	r.GET("/", func(c *gin.Context) {
 	//		c.File("./dist/index.html")
 	//	})
-	r.Static("/", "./dist")
+	r.Use(static.Serve("/", static.LocalFile("./dist", true)))
+	r.GET("/hello", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Hello World!",
+		})
+	})
 	r.Run(PORT)
 }
