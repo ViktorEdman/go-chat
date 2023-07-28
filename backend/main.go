@@ -9,14 +9,18 @@ import (
 )
 
 const PORT = ":3000"
-const HOST = "0.0.0.0"
-const ADDRESS = HOST + ":" + PORT
+const STATICDIR = "./static"
 
 func main() {
-	fmt.Println("Starting server at", HOST+":"+PORT)
+	fmt.Println("Starting server at", "0.0.0.0"+PORT)
 	r := gin.Default()
-	r.Use(static.Serve("/", static.LocalFile("./static", true)))
-	r.GET("/hello", func(c *gin.Context) {
+	r.Use(static.Serve("/", static.LocalFile(STATICDIR, true)))
+	r.NoRoute(func(c *gin.Context) {
+		c.File(STATICDIR + "/index.html")
+	})
+
+	apiRouter := r.Group("/api")
+	apiRouter.GET("/hello", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "Hello World!",
 		})

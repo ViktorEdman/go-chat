@@ -10,7 +10,8 @@
     "serve": "go run main.go"
   },
   "dependencies": {
-    "preact": "^10.16.0"
+    "preact": "^10.16.0",
+    "wouter-preact": "^2.11.0"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.5.0",
