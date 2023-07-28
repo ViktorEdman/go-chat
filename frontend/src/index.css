@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-slate-900 text-white
+}
+
+header {
+  @apply mx-auto
+}
+
+p {
+  @apply mb-3 text-gray-500 dark:text-gray-400  
+}
