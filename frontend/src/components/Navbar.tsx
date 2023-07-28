@@ -1,12 +1,11 @@
-import { Link } from "wouter-preact"
+import NavLink from "./NavLink"
 
 export default function Navbar() {
   return (
-    <>
-      <div className="text-md">
-        Hello world
-      </div>
-      <Link href="/hello"><a>Hello</a></Link>
-    </>
+    <nav className="flex gap-2">
+      <NavLink pathName="/" label="Start" />
+      <NavLink pathName="/hello" label="Hello" />
+
+    </nav>
   )
 }
