@@ -1,11 +1,20 @@
 {
   "name": "chatroom",
-  "version": "0.0.19",
+  "private": true,
+  "version": "0.0.0",
   "type": "module",
-  "devDependencies": {
-    "bun-types": "^0.5.0"
+  "scripts": {
+    "dev": "vite --host",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "serve": "go run main.go"
   },
   "dependencies": {
-    "preact": "^10.13.0"
+    "preact": "^10.16.0"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.5.0",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5"
   }
 }
