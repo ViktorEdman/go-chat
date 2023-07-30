@@ -1,7 +1,8 @@
 import { useState } from "preact/hooks"
+import useChatStore from "../hooks/data"
 
 export default function ChatPage() {
-  const [messages, setMessages] = useState<string[]>([])
+  const { messages, sendMessage } = useChatStore()
   const [message, setMessage] = useState("")
 
   return (
@@ -9,8 +10,8 @@ export default function ChatPage() {
       {messages.map(message => <span>{message}</span>)}
       <form className="w-full" onSubmit={(e) => {
         e.preventDefault()
+        sendMessage(`You: ${message}`)
         setMessage("")
-        return setMessages([...messages, `User: ${message}`])
       }}>
         <input type="text" id="message" className="w-9/12 text-black" value={message} onChange={e => setMessage(e.currentTarget.value)} />
         <button className="w-1/4 rounded bg-green-400 ">Send!</button>
