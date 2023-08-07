@@ -6,9 +6,9 @@ export default function ChatPage() {
   const [message, setMessage] = useState("")
 
   return (
-    <div className="h-72 rounded bg-slate-500 w-72 flex flex-col place-content-end border border-sky-200 resize">
-      {messages.map(message => <span>{message}</span>)}
-      <form className="w-full" onSubmit={(e) => {
+    <div className="h-72 max-h-full   relative overflow-hidden rounded bg-slate-500 w-72   border border-sky-200 ">
+      <div className="flex flex-col overflow-y-auto h-[90%] pb-1">{messages.map(message => <span className="w-full " >{message}</span>)}</div>
+      <form className="w-full h-[10%] pt-1" onSubmit={(e) => {
         e.preventDefault()
         sendMessage(`You: ${message}`)
         setMessage("")

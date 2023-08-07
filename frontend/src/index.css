@@ -13,3 +13,20 @@ header {
 p {
   @apply mb-3 text-gray-500 dark:text-gray-400  
 }
+
+::-webkit-scrollbar {
+    width: 5px;
+    margin: 0px, 2px, 0px, 2px;
+}
+  
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0);
+}
+  
+::-webkit-scrollbar-thumb {
+    background: #FFF;
+}
+  
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
