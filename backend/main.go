@@ -25,8 +25,11 @@ func main() {
 			"message": "Hello World!",
 		})
 	})
-
-	router.GET("/ws", wsHandler)
+	hub := newHub()
+	go hub.run()
+	router.GET("/ws", func(c *gin.Context) {
+		wsHandler(c, hub)
+	})
 
 	router.Run(PORT)
 }
