@@ -2,13 +2,12 @@ import { useEffect, useState } from "preact/hooks"
 import useChatStore from "../hooks/data"
 
 export default function ChatPage() {
-  const { messages, sendMessage, userName, setUserName } = useChatStore()
-  const [message, setMessage] = useState("")
+  const { receiveMessage, messages, sendMessage, userName, setUserName, message, setMessage } = useChatStore()
   const [connected, setConnected] = useState(false)
   const [socket, setSocket] = useState({} as WebSocket)
 
   const connect = () => {
-    const ws = new WebSocket('wss://' + location.host + "/ws")
+    const ws = new WebSocket(location.protocol === "https" ? 'wss://' : "ws://" + location.host + "/ws")
     ws.addEventListener("open", () => {
       setConnected(true)
       setSocket(ws)
@@ -18,7 +17,8 @@ export default function ChatPage() {
       setTimeout(() => connect(), 1000)
     })
     ws.addEventListener("message", (event) => {
-      sendMessage(event.data)
+
+      receiveMessage(event.data)
     })
   }
 
@@ -31,7 +31,9 @@ export default function ChatPage() {
       <div className="flex flex-col overflow-y-auto h-[90%] pb-1">{messages.map((message: string) => <span className="w-full " >{message}</span>)}</div>
       <form className="w-full h-[10%] pt-1" onSubmit={(e) => {
         e.preventDefault()
-        socket.send(`${userName ? `${userName}: ${message}` : `Unknown: ${message}`}`)
+        let sentMessage = `${userName}: ${message}`
+        sendMessage(sentMessage)
+        socket.send(sentMessage)
         setMessage("")
       }}>
         <input autoComplete="off" type="text" id="message" className="w-9/12 text-black" value={message} onChange={e => setMessage(e.currentTarget.value)} />
@@ -45,6 +47,7 @@ export default function ChatPage() {
     <div>
       Your username is {userName}
     </div>
+    <div>Message : {message} </div>
     <div>
       <button
         className="rounded bg-blue-400"
