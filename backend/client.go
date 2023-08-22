@@ -128,7 +128,13 @@ func wsHandler(c *gin.Context, hub *Hub) {
 	client.hub.register <- client
 	fmt.Println("Current clients connected")
 	for c := range hub.clients {
-		fmt.Println(c.ip, c.username)
+		var userName string
+		if c.username == "" {
+			userName = "Unknown"
+		} else {
+			userName = c.username
+		}
+		fmt.Println(c.ip, userName)
 	}
 
 	go client.writePump()
