@@ -2,7 +2,10 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
+	"fmt"
 	"log"
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -27,9 +30,17 @@ var upgrader = websocket.Upgrader{
 }
 
 type Client struct {
-	hub  *Hub
-	conn *websocket.Conn
-	send chan []byte
+	hub      *Hub
+	conn     *websocket.Conn
+	send     chan []byte
+	ip       string
+	username string
+}
+
+type Message struct {
+	MessageType string `json:"messageType"`
+	Message     string `json:"message"`
+	UserName    string `json:"userName"`
 }
 
 func unregisterClient(c *Client) {
@@ -50,8 +61,15 @@ func (c *Client) readPump() {
 			}
 			break
 		}
+		var parsedMessage Message
 		message = bytes.TrimSpace(bytes.Replace(message, newLine, space, -1))
-		c.hub.broadcast <- message
+		err = json.Unmarshal([]byte(message), &parsedMessage)
+		if err != nil {
+			fmt.Println("Failed to parse message", err)
+		}
+		fmt.Printf("Parsed message %+v \n", parsedMessage)
+		c.username = parsedMessage.UserName
+		c.hub.broadcast <- []byte(parsedMessage.Message)
 	}
 }
 
@@ -97,13 +115,21 @@ func (c *Client) writePump() {
 }
 
 func wsHandler(c *gin.Context, hub *Hub) {
+	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	upgrader.CheckOrigin = func(r *http.Request) bool {
+		return true
+	}
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256)}
+	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256), ip: c.Request.Header.Get("X-Real-Ip")}
 	client.hub.register <- client
+	fmt.Println("Current clients connected")
+	for c := range hub.clients {
+		fmt.Println(c.ip, c.username)
+	}
 
 	go client.writePump()
 	go client.readPump()

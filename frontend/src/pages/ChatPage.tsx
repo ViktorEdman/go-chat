@@ -7,7 +7,8 @@ export default function ChatPage() {
   const [socket, setSocket] = useState({} as WebSocket)
 
   const connect = () => {
-    const ws = new WebSocket(location.protocol === "https" ? 'wss://' : "ws://" + location.host + "/ws")
+    const protocol = location.protocol === "https:" ? 'wss://' : "ws://"
+    const ws = new WebSocket(protocol + location.host + "/ws")
     ws.addEventListener("open", () => {
       setConnected(true)
       setSocket(ws)
@@ -31,7 +32,11 @@ export default function ChatPage() {
       <div className="flex flex-col overflow-y-auto h-[90%] pb-1">{messages.map((message: string) => <span className="w-full " >{message}</span>)}</div>
       <form className="w-full h-[10%] pt-1" onSubmit={(e) => {
         e.preventDefault()
-        let sentMessage = `${userName}: ${message}`
+        let sentMessage = JSON.stringify({
+          messageType: "message",
+          userName,
+          message
+        })
         sendMessage(sentMessage)
         socket.send(sentMessage)
         setMessage("")
