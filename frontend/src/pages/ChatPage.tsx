@@ -2,11 +2,11 @@ import { useEffect } from "preact/hooks"
 import { useChatStore } from "../hooks/data"
 
 export default function ChatPage() {
-  const { messages, sendMessage, userName, setUserName, message, setMessage, socket, connected, connect } = useChatStore()
+  const { disconnect, messages, sendMessage, userName, setUserName, message, setMessage, socket, connected, connect } = useChatStore()
 
   useEffect(() => {
-    console.log("Use effect fired")
-    if (socket === null || socket.readyState !== socket.CLOSED) {
+    console.log("Attempting connecton")
+    if (connected === false) {
       connect()
     }
   }, [])
@@ -32,6 +32,13 @@ export default function ChatPage() {
     </div>
     <div>
       {connected ? "Connected" : "Not connected"}
+    </div>
+    <div>
+      <button
+        onClick={() => {
+          connected ? disconnect() : connect()
+        }}
+      >{connected ? "Disconnect" : "Connect"}</button>
     </div>
     <div>
       Your username is {userName}
