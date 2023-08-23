@@ -1,31 +1,14 @@
-import { useEffect, useState } from "preact/hooks"
-import useChatStore from "../hooks/data"
+import { useEffect } from "preact/hooks"
+import { useChatStore } from "../hooks/data"
 
 export default function ChatPage() {
-  const { receiveMessage, messages, sendMessage, userName, setUserName, message, setMessage } = useChatStore()
-  const [connected, setConnected] = useState(false)
-  const [socket, setSocket] = useState({} as WebSocket)
-
-  const connect = () => {
-    const protocol = location.protocol === "https:" ? 'wss://' : "ws://"
-    const ws = new WebSocket(protocol + location.host + "/ws")
-    ws.addEventListener("open", () => {
-      setConnected(true)
-      setSocket(ws)
-    })
-    ws.addEventListener("close", () => {
-      setConnected(false)
-      setTimeout(() => connect(), 1000)
-    })
-    ws.addEventListener("message", (event) => {
-
-      receiveMessage(event.data)
-    })
-  }
+  const { messages, sendMessage, userName, setUserName, message, setMessage, socket, connected, connect } = useChatStore()
 
   useEffect(() => {
     console.log("Use effect fired")
-    connect()
+    if (socket === null || socket.readyState !== socket.CLOSED) {
+      connect()
+    }
   }, [])
   return (<>
     <div className="h-72 max-h-full my-7  relative overflow-hidden rounded bg-slate-500 w-full max-w-3xl   border border-sky-200 ">
@@ -38,7 +21,8 @@ export default function ChatPage() {
           message
         })
         sendMessage(sentMessage)
-        socket.send(sentMessage)
+        console.log(sentMessage)
+        socket !== null && socket.send(sentMessage)
         setMessage("")
       }}>
         <input autoComplete="off" type="text" id="message" className="w-9/12 text-black" value={message} onChange={e => setMessage(e.currentTarget.value)} />
