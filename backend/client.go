@@ -69,7 +69,7 @@ func (c *Client) readPump() {
 		}
 		fmt.Printf("Parsed message %+v \n", parsedMessage)
 		c.username = parsedMessage.UserName
-		c.hub.broadcast <- []byte(parsedMessage.Message)
+		c.hub.broadcast <- []byte(message)
 	}
 }
 
