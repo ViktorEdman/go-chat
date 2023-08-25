@@ -50,9 +50,8 @@ export const useChatStore = create<SocketState & ChatState>((set, get) => ({
     const { message, userName } = JSON.parse(data);
     return { messages: [...state.messages, `${userName}: ${message}`] }
   }),
-  sendMessage: () => {
+  sendMessage: (message: string) => {
     const socket = get().socket
-    const message = get().message
     socket !== null && socket.send(message)
   },
 }))

@@ -48,7 +48,7 @@ export default function ChatPage() {
       >{connected ? "Disconnect" : "Connect"}</button>
     </div>
     <div>
-      Your username is {userName} Test change
+      Your username is {userName}
     </div>
     <div>Message : {message} </div>
     <div>
