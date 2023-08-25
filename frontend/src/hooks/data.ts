@@ -18,7 +18,7 @@ interface SocketState {
   disconnect: () => void
 }
 
-export const useChatStore = create<SocketState & ChatState>((set) => ({
+export const useChatStore = create<SocketState & ChatState>((set, get) => ({
   socket: null,
   connected: false,
   setConnected: (connected: boolean) => set(() => ({ connected: connected })),
@@ -50,6 +50,11 @@ export const useChatStore = create<SocketState & ChatState>((set) => ({
     const { message, userName } = JSON.parse(data);
     return { messages: [...state.messages, `${userName}: ${message}`] }
   }),
-  sendMessage: () => set((state: ChatState) => ({ messages: [...state.messages, state.message] })),
+  sendMessage: () => {
+    const socket = get().socket
+    const message = get().message
+    socket !== null && socket.send(message)
+  },
 }))
+
 export default useChatStore

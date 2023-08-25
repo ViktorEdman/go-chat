@@ -2,7 +2,16 @@ import { useEffect } from "preact/hooks"
 import { useChatStore } from "../hooks/data"
 
 export default function ChatPage() {
-  const { disconnect, messages, sendMessage, userName, setUserName, message, setMessage, socket, connected, connect } = useChatStore()
+  const {
+    disconnect,
+    messages,
+    sendMessage,
+    userName,
+    setUserName,
+    message,
+    setMessage,
+    connected,
+    connect } = useChatStore()
 
   useEffect(() => {
     console.log("Attempting connecton")
@@ -21,11 +30,9 @@ export default function ChatPage() {
           message
         })
         sendMessage(sentMessage)
-        console.log(sentMessage)
-        socket !== null && socket.send(sentMessage)
         setMessage("")
       }}>
-        <input autoComplete="off" type="text" id="message" className="w-9/12 text-black" value={message} onChange={e => setMessage(e.currentTarget.value)} />
+        <input autoFocus={true} autoComplete="off" type="text" id="message" className="w-9/12 text-black" value={message} onChange={e => setMessage(e.currentTarget.value)} />
         <button className="w-1/4 rounded bg-green-400 ">Send!</button>
       </form>
 
@@ -41,7 +48,7 @@ export default function ChatPage() {
       >{connected ? "Disconnect" : "Connect"}</button>
     </div>
     <div>
-      Your username is {userName}
+      Your username is {userName} Test change
     </div>
     <div>Message : {message} </div>
     <div>
