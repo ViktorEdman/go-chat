@@ -1,0 +1,17 @@
+[Unit]
+Description=Chat App using Go
+ConditionPathExists=/home/viktor/dev/go/personal-page/backend
+After=network.target
+[Service]
+Type=simple
+User=burn
+Group=burn
+WorkingDirectory=/home/viktor/dev/go/personal-page/backend
+ExecStart=/home/viktor/dev/go/personal-page/backend/backend
+Restart=on-failure
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=gochatapp
+[Install]
+WantedBy=multi-user.target
