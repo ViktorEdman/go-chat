@@ -1,5 +1,9 @@
 import { create } from "zustand";
 
+type User = {
+  userName: string
+}
+
 interface ChatState {
   messages: string[],
   setUserName: (name: string) => void,
@@ -8,6 +12,8 @@ interface ChatState {
   message: string,
   setMessage: (data: string) => void
   receiveMessage: (message: string) => void
+  users: User[]
+  setUsers: (users: User[]) => void
 }
 
 interface SocketState {
@@ -16,6 +22,12 @@ interface SocketState {
   setConnected: (connected: boolean) => void
   connect: () => void
   disconnect: () => void
+}
+
+type SocketMessage = {
+  messageType: "message" | "userList",
+  userName: string,
+  message?: string | User[]
 }
 
 export const useChatStore = create<SocketState & ChatState>((set, get) => ({
@@ -47,13 +59,23 @@ export const useChatStore = create<SocketState & ChatState>((set, get) => ({
   setMessage: (message: string) => set(() => ({ message: message })),
   messages: [],
   receiveMessage: (data: string) => set((state: ChatState) => {
-    const { message, userName } = JSON.parse(data);
-    return { messages: [...state.messages, `${userName}: ${message}`] }
+    const message: SocketMessage = JSON.parse(data)
+    switch (message.messageType) {
+      case "message":
+        return { messages: [...state.messages, `${message.userName}: ${message.message}`] }
+      case "userList":
+        state.setUsers(message.message as User[])
+        return { messages: state.messages }
+      default:
+        return { messages: state.messages }
+    }
   }),
   sendMessage: (message: string) => {
     const socket = get().socket
     socket !== null && socket.send(message)
   },
+  users: [],
+  setUsers: (users: User[]) => set(() => ({ users }))
 }))
 
 export default useChatStore

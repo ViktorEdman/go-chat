@@ -9,6 +9,9 @@
     "preview": "vite preview",
     "serve": "go run main.go"
   },
+  "prettier": {
+    "printWidth": 80
+  },
   "dependencies": {
     "@types/websocket": "^1.0.5",
     "preact": "^10.16.0",

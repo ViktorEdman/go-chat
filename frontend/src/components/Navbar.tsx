@@ -1,4 +1,4 @@
-import NavLink from "./NavLink"
+import NavLink from "./NavLink";
 
 export default function Navbar() {
   return (
@@ -6,7 +6,6 @@ export default function Navbar() {
       <NavLink pathName="/" label="Start" />
       <NavLink pathName="/about" label="About" />
       <NavLink pathName="/chat" label="Chat!" />
-
     </nav>
-  )
+  );
 }

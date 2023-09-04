@@ -5,7 +5,7 @@ import AboutPage from "../pages/AboutPage";
 import ChatPage from "../pages/ChatPage";
 
 export default function Router() {
-  const [location] = useLocation()
+  const [location] = useLocation();
   return (
     <>
       <Navbar />
@@ -13,9 +13,10 @@ export default function Router() {
         <Route path="/" component={LandingPage} />
         <Route path="/about" component={AboutPage} />
         <Route path="/chat" component={ChatPage} />
-        <Route><p>{location} not found!</p></Route>
+        <Route>
+          <p>{location} not found!</p>
+        </Route>
       </Switch>
     </>
-  )
-
+  );
 }
