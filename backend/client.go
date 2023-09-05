@@ -61,7 +61,14 @@ func (c *Client) readPump() {
 		}
 		var parsedMessage Message
 		json.Unmarshal(message, &parsedMessage)
-		c.hub.broadcast <- []byte(message)
+		if parsedMessage.MessageType == "message" {
+
+			c.hub.broadcast <- []byte(message)
+		}
+		if parsedMessage.MessageType == "setName" {
+			c.username = parsedMessage.UserName
+			c.hub.broadcastUserList()
+		}
 	}
 }
 

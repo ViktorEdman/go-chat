@@ -1,8 +1,5 @@
 import { create } from "zustand";
 
-type User = {
-  userName: string
-}
 
 interface ChatState {
   messages: string[],
@@ -12,8 +9,8 @@ interface ChatState {
   message: string,
   setMessage: (data: string) => void
   receiveMessage: (message: string) => void
-  users: User[]
-  setUsers: (users: User[]) => void
+  users: string[]
+  setUsers: (users: string[]) => void
 }
 
 interface SocketState {
@@ -25,9 +22,10 @@ interface SocketState {
 }
 
 type SocketMessage = {
-  messageType: "message" | "userList",
+  messageType: "message" | "userList" | "setName",
   userName: string,
-  message?: string | User[]
+  userList?: string[]
+  message?: string
 }
 
 export const useChatStore = create<SocketState & ChatState>((set, get) => ({
@@ -39,13 +37,14 @@ export const useChatStore = create<SocketState & ChatState>((set, get) => ({
     const ws = new WebSocket(protocol + location.host + "/ws")
     ws.addEventListener("open", () => {
       state.setConnected(true)
+      const userNameMessage: SocketMessage = { messageType: "setName", userName: state.userName }
+      ws.send(JSON.stringify(userNameMessage))
     })
     ws.addEventListener("close", () => {
       state.setConnected(false)
     })
     ws.addEventListener("message", (event) => {
       state.receiveMessage(event.data)
-      console.log(event.data)
     })
 
     return { socket: ws }
@@ -55,7 +54,13 @@ export const useChatStore = create<SocketState & ChatState>((set, get) => ({
     return { socket: null, connected: false }
   }),
   userName: "",
-  setUserName: (name: string) => set(() => ({ userName: name })),
+  setUserName: (name: string) => set((state) => {
+    const userNameMessage: SocketMessage = { messageType: "setName", userName: name }
+    if (state.socket && state.socket?.readyState === state.socket?.OPEN) {
+      state.socket.send(JSON.stringify(userNameMessage))
+    }
+    return { userName: name }
+  }),
   message: "",
   setMessage: (message: string) => set(() => ({ message: message })),
   messages: [],
@@ -65,7 +70,7 @@ export const useChatStore = create<SocketState & ChatState>((set, get) => ({
       case "message":
         return { messages: [...state.messages, `${message.userName}: ${message.message}`] }
       case "userList":
-        state.setUsers(message.message as User[])
+        message.userList && state.setUsers(message.userList)
         return { messages: state.messages }
       default:
         return { messages: state.messages }
@@ -76,7 +81,7 @@ export const useChatStore = create<SocketState & ChatState>((set, get) => ({
     socket !== null && socket.send(message)
   },
   users: [],
-  setUsers: (users: User[]) => set(() => ({ users }))
+  setUsers: (users: string[]) => set(() => ({ users }))
 }))
 
 export default useChatStore

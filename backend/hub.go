@@ -39,31 +39,33 @@ func (h *Hub) broadcastMessage(message []byte) {
 	}
 }
 
+func (h *Hub) broadcastUserList() {
+	var userList []string
+	for c, v := range h.clients {
+		if v == true {
+			userList = append(userList, c.username)
+		}
+	}
+	userListMessage := Message{MessageType: "userList", UserList: userList}
+	userListJson, _ := json.Marshal(userListMessage)
+	h.broadcastMessage([]byte(userListJson))
+
+}
+
 func (h *Hub) run() {
 	for {
 		select {
 		case client := <-h.register:
 			h.clients[client] = true
-			var userList []string
-			for c, v := range h.clients {
-				if v == true {
-					userList = append(userList, c.username)
-				}
-			}
-			userListMessage := Message{MessageType: "userList", UserList: userList}
-			userListJson, _ := json.Marshal(userListMessage)
-			h.broadcastMessage([]byte(userListJson))
+			h.broadcastUserList()
 		case client := <-h.unregister:
 			if _, ok := h.clients[client]; ok {
 				delete(h.clients, client)
 				close(client.send)
 			}
 		case message := <-h.broadcast:
-			var parsedMessage Message
-			json.Unmarshal(message, &parsedMessage)
-			if parsedMessage.MessageType == "message" {
-				h.broadcastMessage(message)
-			}
+			h.broadcastMessage(message)
+
 		}
 	}
 }
