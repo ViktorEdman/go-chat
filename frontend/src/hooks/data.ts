@@ -47,6 +47,7 @@ export const useChatStore = create<SocketState & ChatState>((set, get) => ({
       state.receiveMessage(event.data)
       console.log(event.data)
     })
+
     return { socket: ws }
   }),
   disconnect: () => set((state) => {

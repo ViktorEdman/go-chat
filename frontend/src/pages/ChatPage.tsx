@@ -1,4 +1,3 @@
-import { useEffect } from "preact/hooks";
 import { useChatStore } from "../hooks/data";
 
 export default function ChatPage() {
@@ -14,12 +13,6 @@ export default function ChatPage() {
     connect,
   } = useChatStore();
 
-  useEffect(() => {
-    console.log("Attempting connecton");
-    if (connected === false) {
-      connect();
-    }
-  }, []);
   return (
     <>
       <div className="h-72 max-h-full my-7  relative overflow-hidden rounded bg-slate-500 w-full max-w-3xl grid-rows-1 grid-cols-4  border border-sky-200 grid">
