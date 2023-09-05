@@ -1,5 +1,7 @@
 package main
 
+import "encoding/json"
+
 type Hub struct {
 	clients map[*Client]bool
 
@@ -8,6 +10,13 @@ type Hub struct {
 	register chan *Client
 
 	unregister chan *Client
+}
+
+type Message struct {
+	MessageType string   `json:"messageType"`
+	Message     string   `json:"message"`
+	UserList    []string `json:"userList"`
+	UserName    string   `json:"userName"`
 }
 
 func newHub() *Hub {
@@ -19,24 +28,41 @@ func newHub() *Hub {
 	}
 }
 
+func (h *Hub) broadcastMessage(message []byte) {
+	for client := range h.clients {
+		select {
+		case client.send <- message:
+		default:
+			close(client.send)
+			delete(h.clients, client)
+		}
+	}
+}
+
 func (h *Hub) run() {
 	for {
 		select {
 		case client := <-h.register:
 			h.clients[client] = true
+			var userList []string
+			for c, v := range h.clients {
+				if v == true {
+					userList = append(userList, c.username)
+				}
+			}
+			userListMessage := Message{MessageType: "userList", UserList: userList}
+			userListJson, _ := json.Marshal(userListMessage)
+			h.broadcastMessage([]byte(userListJson))
 		case client := <-h.unregister:
 			if _, ok := h.clients[client]; ok {
 				delete(h.clients, client)
 				close(client.send)
 			}
 		case message := <-h.broadcast:
-			for client := range h.clients {
-				select {
-				case client.send <- message:
-				default:
-					close(client.send)
-					delete(h.clients, client)
-				}
+			var parsedMessage Message
+			json.Unmarshal(message, &parsedMessage)
+			if parsedMessage.MessageType == "message" {
+				h.broadcastMessage(message)
 			}
 		}
 	}

@@ -37,12 +37,6 @@ type Client struct {
 	username string
 }
 
-type Message struct {
-	MessageType string `json:"messageType"`
-	Message     string `json:"message"`
-	UserName    string `json:"userName"`
-}
-
 func unregisterClient(c *Client) {
 	c.hub.unregister <- c
 	c.conn.Close()
@@ -61,14 +55,12 @@ func (c *Client) readPump() {
 			}
 			break
 		}
-		var parsedMessage Message
 		message = bytes.TrimSpace(bytes.Replace(message, newLine, space, -1))
-		err = json.Unmarshal([]byte(message), &parsedMessage)
 		if err != nil {
 			fmt.Println("Failed to parse message", err)
 		}
-		fmt.Printf("Parsed message %+v \n", parsedMessage)
-		c.username = parsedMessage.UserName
+		var parsedMessage Message
+		json.Unmarshal(message, &parsedMessage)
 		c.hub.broadcast <- []byte(message)
 	}
 }
