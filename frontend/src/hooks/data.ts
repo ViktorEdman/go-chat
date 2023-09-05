@@ -41,6 +41,7 @@ export const useChatStore = create<SocketState & ChatState>((set, get) => ({
       ws.send(JSON.stringify(userNameMessage))
     })
     ws.addEventListener("close", () => {
+      state.setUsers([])
       state.setConnected(false)
     })
     ws.addEventListener("message", (event) => {
@@ -54,8 +55,9 @@ export const useChatStore = create<SocketState & ChatState>((set, get) => ({
     state.socket && state.socket.close()
     return { socket: null, connected: false }
   }),
-  userName: "",
+  userName: localStorage.getItem("username") ?? "",
   setUserName: (name: string) => set((state) => {
+    localStorage.setItem("username", name)
     const userNameMessage: SocketMessage = { messageType: "setName", userName: name }
     if (state.socket && state.socket?.readyState === state.socket?.OPEN) {
       state.socket.send(JSON.stringify(userNameMessage))

@@ -71,9 +71,29 @@ func (c *Client) readPump() {
 				setNameMsg := Message{MessageType: "setName", UserName: autoName}
 				setNameJson, _ := json.Marshal(setNameMsg)
 				c.send <- setNameJson
+				c.hub.broadcastUserList()
+			} else {
+				nameExists := false
+				duplicates := 0
+				for client := range c.hub.clients {
+					if client.username == parsedMessage.UserName {
+						nameExists = true
+						duplicates++
+					}
+
+				}
+				if nameExists == false {
+					c.username = parsedMessage.UserName
+					c.hub.broadcastUserList()
+				} else {
+					dedupedUsername := parsedMessage.UserName + " " + fmt.Sprint(duplicates)
+					setNameMsg := Message{MessageType: "setName", UserName: dedupedUsername}
+					setNameJson, _ := json.Marshal(setNameMsg)
+					c.send <- setNameJson
+
+					c.hub.broadcastUserList()
+				}
 			}
-			c.username = parsedMessage.UserName
-			c.hub.broadcastUserList()
 		}
 	}
 }
@@ -126,7 +146,6 @@ func wsHandler(c *gin.Context, hub *Hub) {
 	}
 	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256), ip: c.Request.Header.Get("X-Real-Ip")}
 	client.hub.register <- client
-	fmt.Println("Current clients connected")
 	for c := range hub.clients {
 		var userName string
 		if c.username == "" {

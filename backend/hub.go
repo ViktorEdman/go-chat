@@ -1,6 +1,9 @@
 package main
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 type Hub struct {
 	clients map[*Client]bool
@@ -48,6 +51,7 @@ func (h *Hub) broadcastUserList() {
 	}
 	userListMessage := Message{MessageType: "userList", UserList: userList}
 	userListJson, _ := json.Marshal(userListMessage)
+	fmt.Println("Current users", userListMessage)
 	h.broadcastMessage([]byte(userListJson))
 
 }
@@ -63,6 +67,7 @@ func (h *Hub) run() {
 				delete(h.clients, client)
 				close(client.send)
 			}
+			h.broadcastUserList()
 		case message := <-h.broadcast:
 			h.broadcastMessage(message)
 
