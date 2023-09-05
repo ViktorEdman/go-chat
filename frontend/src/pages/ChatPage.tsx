@@ -16,7 +16,7 @@ export default function ChatPage() {
 
   return (
     <>
-      <div className="h-72 max-h-full my-7  relative overflow-hidden rounded bg-slate-500 w-full max-w-3xl grid-rows-1 grid-cols-4  border border-sky-200 grid">
+      <div className="h-72 max-h-full my-7  relative overflow-hidden rounded bg-slate-500 w-full max-w-3xl grid-cols-4  border border-sky-200 grid">
         <div className="col-span-1 border border-sky-200 overflow-y-auto">
           <h2 className="text-lg underline">Users</h2>
           <ul>

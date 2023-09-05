@@ -66,6 +66,12 @@ func (c *Client) readPump() {
 			c.hub.broadcast <- []byte(message)
 		}
 		if parsedMessage.MessageType == "setName" {
+			if parsedMessage.UserName == "" {
+				autoName := "New guy " + fmt.Sprint(len(c.hub.clients))
+				setNameMsg := Message{MessageType: "setName", UserName: autoName}
+				setNameJson, _ := json.Marshal(setNameMsg)
+				c.send <- setNameJson
+			}
 			c.username = parsedMessage.UserName
 			c.hub.broadcastUserList()
 		}
@@ -95,11 +101,6 @@ func (c *Client) writePump() {
 			w.Write(message)
 
 			// Add queued chat messages to the current websocket message.
-			n := len(c.send)
-			for i := 0; i < n; i++ {
-				w.Write(newLine)
-				w.Write(<-c.send)
-			}
 
 			if err := w.Close(); err != nil {
 				return

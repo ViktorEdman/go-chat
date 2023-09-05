@@ -44,7 +44,8 @@ export const useChatStore = create<SocketState & ChatState>((set, get) => ({
       state.setConnected(false)
     })
     ws.addEventListener("message", (event) => {
-      state.receiveMessage(event.data)
+      const message = event.data.split('\n')
+      message.forEach((message: string) => state.receiveMessage(message))
     })
 
     return { socket: ws }
@@ -71,6 +72,9 @@ export const useChatStore = create<SocketState & ChatState>((set, get) => ({
         return { messages: [...state.messages, `${message.userName}: ${message.message}`] }
       case "userList":
         message.userList && state.setUsers(message.userList)
+        return { messages: state.messages }
+      case "setName":
+        state.setUserName(message.userName)
         return { messages: state.messages }
       default:
         return { messages: state.messages }
