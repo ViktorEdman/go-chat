@@ -18,6 +18,9 @@ func main() {
 	router.NoRoute(func(c *gin.Context) {
 		c.File(STATICDIR + "/index.html")
 	})
+	router.Any("/404", func(c *gin.Context) {
+		c.JSON(404, gin.H{"code": "not found", "message": "404 not found"})
+	})
 
 	apiRouter := router.Group("/api")
 	apiRouter.GET("/hello", func(c *gin.Context) {
