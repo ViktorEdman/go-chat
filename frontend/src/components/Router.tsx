@@ -4,8 +4,7 @@ import AboutPage from "../pages/AboutPage";
 import ChatPage from "../pages/ChatPage";
 
 export default function Router() {
-  const [location, setLocation] = useLocation();
-  if (location === "/404") setLocation("/404")
+  const [location] = useLocation();
   return (
     <>
       <Switch>
