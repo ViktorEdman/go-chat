@@ -13,17 +13,17 @@
     "printWidth": 80
   },
   "dependencies": {
-    "@types/websocket": "^1.0.5",
-    "preact": "^10.16.0",
+    "@types/websocket": "^1.0.6",
+    "preact": "^10.17.1",
     "wouter-preact": "^2.11.0",
     "zustand": "^4.4.1"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.5.0",
-    "autoprefixer": "^10.4.14",
-    "postcss": "^8.4.27",
+    "autoprefixer": "^10.4.15",
+    "postcss": "^8.4.29",
     "tailwindcss": "^3.3.3",
-    "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "typescript": "^5.2.2",
+    "vite": "^4.4.9"
   }
 }
