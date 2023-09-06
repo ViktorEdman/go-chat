@@ -43,8 +43,8 @@ export default function ChatPage() {
 
         <div className="col-span-3 row-span-3">
           <div className="h-[90%] flex flex-col overflow-y-auto">
-            {messages.map((message: string) => (
-              <span className="w-full px-2" key={message}>{message}</span>
+            {messages.map((message: string, index) => (
+              <span className={"w-full px-2" + index % 2} key={message}>{message}</span>
             ))}
           </div>
           <form
