@@ -1,12 +1,11 @@
 FROM golang:alpine as backendbuilder
 
 WORKDIR /src
-COPY . .
+COPY go.mod go.sum ./
 
 RUN go mod download
+COPY *.go ./
 RUN ["go", "build",  "-o", "go-chatroom", "."]
-
-EXPOSE 3000
 
 FROM node:alpine as frontendbuilder
 
@@ -21,3 +20,4 @@ WORKDIR /app
 COPY --from=frontendbuilder /src/dist /app/frontend/dist
 COPY --from=backendbuilder /src/go-chatroom /app
 CMD ["./go-chatroom"]
+EXPOSE 3000

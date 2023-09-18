@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ViktorEdman/go-chatroom/chatlog"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 )
@@ -63,7 +62,7 @@ func (c *Client) readPump() {
 		var parsedMessage Message
 		json.Unmarshal(message, &parsedMessage)
 		if parsedMessage.MessageType == "message" {
-			chatlog.WriteToLog(message)
+			WriteToLog(message)
 			c.hub.broadcast <- []byte(message)
 		}
 		if parsedMessage.MessageType == "setName" {
