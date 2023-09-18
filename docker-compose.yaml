@@ -1,0 +1,11 @@
+services:
+  go-chatroom:
+    build: .
+    networks:
+      - web
+    volumes:
+      - ./chat.log:/app/chat.log
+
+networks:
+  web:
+    external: true
