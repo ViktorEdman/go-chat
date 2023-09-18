@@ -1,10 +1,13 @@
 services:
   go-chatroom:
     build: .
+    container_name: go-chatroom
     networks:
       - web
     volumes:
       - ./chat.log:/app/chat.log
+    environment:
+      - GIN_DEBUG=release
 
 networks:
   web:
