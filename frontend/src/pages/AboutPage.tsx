@@ -14,6 +14,6 @@ export default function AboutPage() {
       <li>MariaDB - An off the shelf docker image for persisting the reverse proxy data between boots.</li>
       <li>Auto DNS Updater - A small go application i made for updating mycloudflare dns records if my dynamic IP changes.</li>
     </ul>
-    <p>The source for the site can be found on Github <a className="text-blue-700 visited:text-purple-700" href="">here</a> </p>
+    <p>The source for the site can be found on Github <a className="text-blue-700 visited:text-purple-700" href="https://github.com/ViktorEdman/go-chat" target="_blank">here</a> </p>
   </>)
 }

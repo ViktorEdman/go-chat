@@ -2,8 +2,14 @@ export default function LandingPage() {
   return (
     <main >
       <p>Welcome to my website, I'm an aspiring web developer with hopes of working with development full time</p>
-      <p>On this website you can find any projects I'm working on currently, as well as links to my socials</p>
-      <p>Click one of the links above to check out some of the apps I've built. </p>
+      <p>This page is meant to demonstrate things I find interesting about software development</p>
+      <ul className="ml-8 list-disc">
+        <li>Using programming to do real work. (Meaning automating the boring stuff)</li>
+        <li>Realtime communications</li>
+        <li>Javascript</li>
+        <li>Go</li>
+        <li>UI</li>
+      </ul>
     </main >
   )
 

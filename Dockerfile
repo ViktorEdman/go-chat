@@ -7,17 +7,23 @@ RUN go mod download
 COPY *.go ./
 RUN ["go", "build",  "-o", "go-chatroom", "."]
 
-FROM node:alpine as frontendbuilder
+FROM node:alpine as pnpm
+RUN corepack enable
+RUN corepack prepare pnpm@8.7.4 --activate
 
-WORKDIR /src
-COPY ./frontend .
-RUN npm install
-RUN npm run build
+FROM pnpm as frontenddeps
+COPY ./frontend/package.json ./
+COPY ./frontend/pnpm-lock.yaml ./
+RUN pnpm  install --frozen-lockfile
+
+FROM frontenddeps as frontendbuilder
+COPY ./frontend ./
+RUN pnpm run build
 
 FROM scratch
 WORKDIR /app
 
-COPY --from=frontendbuilder /src/dist /app/frontend/dist
+COPY --from=frontendbuilder /dist /app/frontend/dist
 COPY --from=backendbuilder /src/go-chatroom /app
 CMD ["./go-chatroom"]
 EXPOSE 3000
