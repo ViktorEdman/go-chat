@@ -4,7 +4,7 @@ export default function AboutPage() {
       Technologies used for this website:
     </p>
 
-    <ul className="ml-8 list-disc">
+    <ul className="ml-8 my-8 list-disc">
       <li>Linux - the server is running Debian 12</li>
       <li>Go - the websocket and static content server is built with Go 1.21</li>
       <li>Typescript - Linting and discovability aid during development of the UI of the site.</li>

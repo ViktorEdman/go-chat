@@ -1,9 +1,11 @@
-FROM golang:alpine as backendbuilder
+FROM golang:1.21-alpine3.17 as backenddeps
 
 WORKDIR /src
 COPY go.mod go.sum ./
 
 RUN go mod download
+
+FROM backenddeps as backendbuilder
 COPY *.go ./
 RUN ["go", "build",  "-o", "go-chatroom", "."]
 
